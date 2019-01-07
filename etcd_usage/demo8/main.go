@@ -29,7 +29,7 @@ func main() {
 	}
 	kv = clientv3.NewKV(client)
 	//创建OP operation
-	putOp = clientv3.OpPut("/cron/jobs/job8", "")
+	putOp = clientv3.OpPut("/cron/jobs/job8", "12334")
 	// 执行OP
 	if opResp, err = kv.Do(context.TODO(), putOp); err != nil {
 		fmt.Println(err)
