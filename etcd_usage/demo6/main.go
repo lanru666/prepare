@@ -35,7 +35,6 @@ func main() {
 		return
 	}
 	// 申请一个lease(租约)
-	
 	lease = clientv3.NewLease(client)
 	// 申请一个10秒的租约
 	if leaseGrantResp, err = lease.Grant(context.TODO(), 10); err != nil {
