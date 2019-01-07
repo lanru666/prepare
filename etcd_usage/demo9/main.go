@@ -24,6 +24,8 @@ func main() {
 		keepResp       *clientv3.LeaseKeepAliveResponse
 		ctx            context.Context
 		cancelFunc     context.CancelFunc
+		txn            clientv3.Txn
+		txnResp        *clientv3.TxnResponse
 	)
 	//客户端配置
 	config = clientv3.Config{
@@ -73,10 +75,29 @@ func main() {
 		}
 	END:
 	}()
-	// 获得kv API子集
+	
+	// if 不存在key then 设置它 else 抢锁失败
 	kv = clientv3.NewKV(client)
+	// 创建事务
+	txn = kv.Txn(context.TODO())
+	// 如果key不存在，定义事务
+	txn.If(clientv3.Compare(clientv3.CreateRevision("/cron/lock/job9"), "=", 0)).Then(clientv3.OpPut("/cron/lock/job9", "xxx", clientv3.WithLease(leaseId))).Else(clientv3.OpGet("/cron/lock/job9")) //否则抢锁失败
+	// 提交事务
+	if txnResp, err = txn.Commit(); err != nil {
+		fmt.Println(err)
+		return
+	}
+	//判断是否抢到了锁
+	if txnResp.Succeeded {
+		fmt.Println("锁被占用", string(txnResp.Responses[0].GetResponseRange().Kvs[0].Value))
+		return
+	}
 	// 2 处理业务
+	fmt.Println("处理任务")
+	time.Sleep(5 * time.Second)
+	// 在锁内，很安全
 	
 	// 3 释放锁(取消自动续租，释放租约)
+	// defer 会把租约释放掉 关联的KV就被删除了
 	
 }
