@@ -8,7 +8,6 @@ import (
 )
 
 func main() {
-	
 	var (
 		config clientv3.Config
 		client *clientv3.Client
@@ -49,5 +48,4 @@ func main() {
 	//打印
 	fmt.Println("数据Revision", opResp.Get().Kvs[0].ModRevision)
 	fmt.Println("数据value", string(opResp.Get().Kvs[0].Value))
-	
 }
