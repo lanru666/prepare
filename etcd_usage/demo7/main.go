@@ -56,6 +56,7 @@ func main() {
 	watcher = clientv3.NewWatcher(client)
 	//启动监听
 	fmt.Println("从该版本向后监听", watchStartRevision)
+	//取消上下文的写法
 	ctx, cancelFun := context.WithCancel(context.TODO())
 	//5秒后取消监听
 	time.AfterFunc(5*time.Second, func() {
