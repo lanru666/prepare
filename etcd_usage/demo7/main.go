@@ -56,7 +56,13 @@ func main() {
 	watcher = clientv3.NewWatcher(client)
 	//启动监听
 	fmt.Println("从该版本向后监听", watchStartRevision)
-	watchRespChan = watcher.Watch(context.TODO(), "/cron/jobs/job7", clientv3.WithRev(watchStartRevision))
+	ctx, cancelFun := context.WithCancel(context.TODO())
+	//5秒后取消监听
+	time.AfterFunc(5*time.Second, func() {
+		cancelFun()
+	})
+	//监听器
+	watchRespChan = watcher.Watch(ctx, "/cron/jobs/job7", clientv3.WithRev(watchStartRevision))
 	//处理kv变化事件
 	for watchResp = range watchRespChan {
 		for _, event = range watchResp.Events {
