@@ -42,7 +42,7 @@ func main() {
 	// 申请一个lease(租约)
 	lease = clientv3.NewLease(client)
 	// 申请一个10秒的租约
-	if leaseGrantResp, err = lease.Grant(context.TODO(), 10); err != nil {
+	if leaseGrantResp, err = lease.Grant(context.TODO(), 5); err != nil {
 		fmt.Println(err)
 		return
 	}
@@ -88,7 +88,7 @@ func main() {
 		return
 	}
 	//判断是否抢到了锁
-	if txnResp.Succeeded {
+	if !txnResp.Succeeded {
 		fmt.Println("锁被占用", string(txnResp.Responses[0].GetResponseRange().Kvs[0].Value))
 		return
 	}
