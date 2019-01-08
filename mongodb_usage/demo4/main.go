@@ -58,6 +58,9 @@ func main() {
 		return
 	}
 	//6、遍历结果集
+	// 释放游标
+	defer cursor.Close(context.TODO())
+	
 	for cursor.Next(context.TODO()) {
 		//定义一个日志对象
 		record = &LogRecord{}
@@ -69,5 +72,5 @@ func main() {
 		//把日志行打印
 		fmt.Println(*record)
 	}
-	cursor.Close(context.TODO())
+	
 }
