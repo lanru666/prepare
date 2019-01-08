@@ -69,4 +69,5 @@ func main() {
 		//把日志行打印
 		fmt.Println(*record)
 	}
+	cursor.Close(context.TODO())
 }
